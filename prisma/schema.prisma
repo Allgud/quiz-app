@@ -31,6 +31,7 @@ model Attempt {
 model Question {
   id String @id @default(uuid())
   text String
+  code String?
   order Int @unique
   options Option[] 
 }
