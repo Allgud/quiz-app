@@ -1,0 +1,31 @@
+.root {
+  height: 100vh;
+
+  padding: 40px;
+}
+
+.header {
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+
+  padding: 8px;
+}
+
+.table {
+  border: 1px solid #ffffff;
+  border-radius: 12px;
+
+  width: 100%;
+  height: fit-content;
+}
+
+.tableHeader {
+  width: 100%;
+  border-bottom: 1px solid #ffffff;
+}
+
+.tableRow {
+  width: 100%;
+}

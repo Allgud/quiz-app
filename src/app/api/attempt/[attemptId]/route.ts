@@ -61,5 +61,7 @@ export async function GET(
     where: { id: attemptId },
   });
 
-  return NextResponse.json({ attempt });
+  const total = await prisma.question.count();
+
+  return NextResponse.json({ attempt, total });
 }
