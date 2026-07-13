@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Question } from "./components/Question";
 import { Button } from "../components/Button";
 
@@ -64,30 +64,32 @@ export default function Quiz() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className={styles.root}>
-      <div className={styles.content}>
-        {!isLoading && Boolean(questions.length) && (
-          <Question
-            question={questions[currentQuestion]}
-            selectedId={selectedId}
-            onSelect={handleSelectAnswer}
-          />
-        )}
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <div className={styles.root}>
+        <div className={styles.content}>
+          {!isLoading && Boolean(questions.length) && (
+            <Question
+              question={questions[currentQuestion]}
+              selectedId={selectedId}
+              onSelect={handleSelectAnswer}
+            />
+          )}
 
-        {isLoading && <div>Загрузка...</div>}
-      </div>
+          {isLoading && <div>Загрузка...</div>}
+        </div>
 
-      <ProgressBar
-        progress={((currentQuestion + 1) / questions.length) * 100}
-      />
-
-      <footer className={styles.footer}>
-        <Button
-          text={isFinalQuestion ? "Завершить" : "Ответить"}
-          onClick={handleAnswer}
-          disabled={!selectedId}
+        <ProgressBar
+          progress={((currentQuestion + 1) / questions.length) * 100}
         />
-      </footer>
-    </div>
+
+        <footer className={styles.footer}>
+          <Button
+            text={isFinalQuestion ? "Завершить" : "Ответить"}
+            onClick={handleAnswer}
+            disabled={!selectedId}
+          />
+        </footer>
+      </div>
+    </Suspense>
   );
 }

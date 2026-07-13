@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -42,22 +42,25 @@ export default function Results() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className={styles.root}>
-      {isLoading && <div>Загрузка...</div>}
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <div className={styles.root}>
+        {isLoading && <div>Загрузка...</div>}
 
-      {!isLoading && (
-        <>
-          <h2>Опрос завершен</h2>
+        {!isLoading && (
+          <>
+            <h2>Опрос завершен</h2>
 
-          <span>
-            Твой результат: {finalScore} правильных ответов из {totalQuestions}
-          </span>
+            <span>
+              Твой результат: {finalScore} правильных ответов из{" "}
+              {totalQuestions}
+            </span>
 
-          <Link href="/" className={styles.link}>
-            На главную
-          </Link>
-        </>
-      )}
-    </div>
+            <Link href="/" className={styles.link}>
+              На главную
+            </Link>
+          </>
+        )}
+      </div>
+    </Suspense>
   );
 }
