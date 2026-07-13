@@ -23,9 +23,12 @@
 
 .tableHeader {
   width: 100%;
-  border-bottom: 1px solid #ffffff;
 }
 
 .tableRow {
   width: 100%;
+
+  td {
+    text-align: center;
+  }
 }

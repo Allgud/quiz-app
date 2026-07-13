@@ -18,6 +18,8 @@ export default function Quiz() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const attemptId = searchParams.get("attemptId");
   const isFinalQuestion = currentQuestion === questions.length - 1;
@@ -43,29 +45,41 @@ export default function Quiz() {
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const questions = await fetch("/api/questions")
-        .then((data) => data.json())
-        .then((data) => data.questions);
+      try {
+        const questions = await fetch("/api/questions")
+          .then((data) => data.json())
+          .then((data) => data.questions);
 
-      setQuestions(questions);
+        setQuestions(questions);
+      } catch (error) {
+        setError(String(error));
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchQuestions();
   }, []);
 
+  if (error) return <div>{error}</div>;
+
   return (
     <div className={styles.root}>
       <div className={styles.content}>
-        {Boolean(questions.length) && (
+        {!isLoading && Boolean(questions.length) && (
           <Question
             question={questions[currentQuestion]}
             selectedId={selectedId}
             onSelect={handleSelectAnswer}
           />
         )}
+
+        {isLoading && <div>Загрузка...</div>}
       </div>
 
-      <ProgressBar progress={(currentQuestion + 1 / questions.length) * 100} />
+      <ProgressBar
+        progress={((currentQuestion + 1) / questions.length) * 100}
+      />
 
       <footer className={styles.footer}>
         <Button

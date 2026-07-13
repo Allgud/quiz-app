@@ -10,3 +10,11 @@ export type Question = {
   order: number;
   options: Option[];
 };
+
+export type Attempt = {
+  id: string;
+  createdAt: string;
+  finishedAt: string | null;
+  score: number;
+  sessionId: string;
+};

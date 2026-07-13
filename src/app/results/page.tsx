@@ -12,38 +12,52 @@ export default function Results() {
 
   const [finalScore, setFinalScore] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const attemptId = searchParams.get("attemptId");
 
   useEffect(() => {
     const fetchResults = async () => {
-      const result = await fetch(`/api/attempt/${attemptId}`)
-        .then((data) => data.json())
-        .then((data) => ({
-          score: data.attempt.score,
-          total: data.total,
-        }));
+      try {
+        const result = await fetch(`/api/attempt/${attemptId}`)
+          .then((data) => data.json())
+          .then((data) => ({
+            score: data.attempt.score,
+            total: data.total,
+          }));
 
-      console.log(result);
-
-      setFinalScore(result.score);
-      setTotalQuestions(result.total);
+        setFinalScore(result.score);
+        setTotalQuestions(result.total);
+      } catch (error) {
+        setError(String(error));
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchResults();
   }, []);
 
+  if (error) return <div>{error}</div>;
+
   return (
     <div className={styles.root}>
-      <h2>Опрос завершен</h2>
+      {isLoading && <div>Загрузка...</div>}
 
-      <span>
-        Твой результат: {finalScore} правильных ответов из {totalQuestions}
-      </span>
+      {!isLoading && (
+        <>
+          <h2>Опрос завершен</h2>
 
-      <Link href="/quiz" className={styles.link}>
-        Начать заново
-      </Link>
+          <span>
+            Твой результат: {finalScore} правильных ответов из {totalQuestions}
+          </span>
+
+          <Link href="/" className={styles.link}>
+            На главную
+          </Link>
+        </>
+      )}
     </div>
   );
 }

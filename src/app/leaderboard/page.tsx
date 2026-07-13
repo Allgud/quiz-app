@@ -1,13 +1,40 @@
+"use client";
+
 import Link from "next/link";
+
+import { useEffect, useState } from "react";
+
+import type { Attempt } from "@/types";
 
 import styles from "./page.module.css";
 
-const mockResults = [
-  { sessionId: "first", points: "5/7", date: "12.07.2026" },
-  { sessionId: "second", points: "6/7", date: "13.07.2026" },
-];
-
 export default function Leaderboard() {
+  const [results, setResults] = useState<Attempt[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      setError(null);
+
+      try {
+        await fetch("/api/leaderboard")
+          .then((data) => data.json())
+          .then((data) => {
+            setResults(data.results);
+          });
+      } catch (error) {
+        setError(String(error));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, []);
+
+  if (error) return <div>{error}</div>;
+
   return (
     <div className={styles.root}>
       <div className={styles.header}>
@@ -26,13 +53,26 @@ export default function Leaderboard() {
         </thead>
 
         <tbody>
-          {mockResults.map((result, index) => (
-            <tr key={result.sessionId} className={styles.tableRow}>
-              <td>{index + 1}</td>
-              <td>{result.points}</td>
-              <td>{result.date}</td>
+          {!isLoading &&
+            results.map((result, index) => (
+              <tr key={result.id} className={styles.tableRow}>
+                <td>{index + 1}</td>
+                <td>{result.score}</td>
+                {result.finishedAt && (
+                  <td>
+                    {new Intl.DateTimeFormat("ru-RU").format(
+                      new Date(result.finishedAt),
+                    )}
+                  </td>
+                )}
+              </tr>
+            ))}
+
+          {isLoading && (
+            <tr>
+              <td colSpan={3}>Загрузка...</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
