@@ -58,13 +58,11 @@ export default function Leaderboard() {
               <tr key={result.id} className={styles.tableRow}>
                 <td>{index + 1}</td>
                 <td>{result.score}</td>
-                {result.finishedAt && (
-                  <td>
-                    {new Intl.DateTimeFormat("ru-RU").format(
-                      new Date(result.finishedAt),
-                    )}
-                  </td>
-                )}
+                <td>
+                  {new Intl.DateTimeFormat("ru-RU").format(
+                    new Date(result.finishedAt!),
+                  )}
+                </td>
               </tr>
             ))}
 

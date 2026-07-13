@@ -16,7 +16,7 @@ export default function Home() {
 
     const attemptId = await fetch("/api/attempt", {
       method: "POST",
-      headers: { Content_Type: "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionId }),
     })
       .then((data) => data.json())

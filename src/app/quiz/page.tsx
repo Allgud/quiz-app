@@ -10,7 +10,7 @@ import styles from "./page.module.css";
 import { ProgressBar } from "../components/ProgressBar";
 import type { Question as QuestionType } from "@/types";
 
-export default function Quiz() {
+const QuizContent = () => {
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -64,32 +64,38 @@ export default function Quiz() {
   if (error) return <div>{error}</div>;
 
   return (
-    <Suspense fallback={<div>Загрузка...</div>}>
-      <div className={styles.root}>
-        <div className={styles.content}>
-          {!isLoading && Boolean(questions.length) && (
-            <Question
-              question={questions[currentQuestion]}
-              selectedId={selectedId}
-              onSelect={handleSelectAnswer}
-            />
-          )}
-
-          {isLoading && <div>Загрузка...</div>}
-        </div>
-
-        <ProgressBar
-          progress={((currentQuestion + 1) / questions.length) * 100}
-        />
-
-        <footer className={styles.footer}>
-          <Button
-            text={isFinalQuestion ? "Завершить" : "Ответить"}
-            onClick={handleAnswer}
-            disabled={!selectedId}
+    <div className={styles.root}>
+      <div className={styles.content}>
+        {!isLoading && Boolean(questions.length) && (
+          <Question
+            question={questions[currentQuestion]}
+            selectedId={selectedId}
+            onSelect={handleSelectAnswer}
           />
-        </footer>
+        )}
+
+        {isLoading && <div>Загрузка...</div>}
       </div>
+
+      <ProgressBar
+        progress={((currentQuestion + 1) / questions.length) * 100}
+      />
+
+      <footer className={styles.footer}>
+        <Button
+          text={isFinalQuestion ? "Завершить" : "Ответить"}
+          onClick={handleAnswer}
+          disabled={!selectedId}
+        />
+      </footer>
+    </div>
+  );
+};
+
+export default function Quiz() {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <QuizContent />
     </Suspense>
   );
 }

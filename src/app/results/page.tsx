@@ -7,7 +7,7 @@ import Link from "next/link";
 
 import styles from "./page.module.css";
 
-export default function Results() {
+const ResultsContent = () => {
   const searchParams = useSearchParams();
 
   const [finalScore, setFinalScore] = useState(0);
@@ -42,25 +42,30 @@ export default function Results() {
   if (error) return <div>{error}</div>;
 
   return (
+    <div className={styles.root}>
+      {isLoading && <div>Загрузка...</div>}
+
+      {!isLoading && (
+        <>
+          <h2>Опрос завершен</h2>
+
+          <span>
+            Твой результат: {finalScore} правильных ответов из {totalQuestions}
+          </span>
+
+          <Link href="/" className={styles.link}>
+            На главную
+          </Link>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default function Results() {
+  return (
     <Suspense fallback={<div>Загрузка...</div>}>
-      <div className={styles.root}>
-        {isLoading && <div>Загрузка...</div>}
-
-        {!isLoading && (
-          <>
-            <h2>Опрос завершен</h2>
-
-            <span>
-              Твой результат: {finalScore} правильных ответов из{" "}
-              {totalQuestions}
-            </span>
-
-            <Link href="/" className={styles.link}>
-              На главную
-            </Link>
-          </>
-        )}
-      </div>
+      <ResultsContent />
     </Suspense>
   );
 }
